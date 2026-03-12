@@ -40,12 +40,12 @@ This repository — **Version 2** — focuses on designing and implementing the 
 | | v1 — CSC-225 · Fall 2025 | v2 — CSC-271 · Spring 2026 |
 |---|---|---|
 | **Repository** | [Namal-Criko](https://github.com/MJamalAhmadKhan/Namal-Criko) | [Namal-Criko-Database](https://github.com/MJamalAhmadKhan/Namal_Criko_v.2) *(this repo)* |
-| **Focus** | Frontend simulation & UI | Full relational database layer |
-| **Storage** | MySQL 8.x normalised schema (3NF) |
+| **Focus** | PrototyPe and documentation | Full relational database layer |
+| **Storage** |No storage concept |MySQL 8.x normalised schema (3NF) |
 | **Backend** | None | Node.js + Express REST API |
-| **Data** | Hardcoded / session-only | Persistent: users, logs, tickets, stats |
+| **Data** | None | Persistent: users, logs, tickets, stats |
 | **New Modules** | — | Top Players, Quote of the Day, Help Desk, Audit Logs, Reporting Views |
-| **Demo App** | Standalone frontend | Full-stack local web app (React + Express + MySQL) |
+| **Demo App** |Figma Prototype | Full-stack local web app (React + Express + MySQL) |
 
 ---
 
