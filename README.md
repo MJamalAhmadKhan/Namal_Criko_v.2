@@ -31,7 +31,7 @@
 
 This repository — **Version 2** — focuses on designing and implementing the complete **relational database layer** for the platform as part of CSC-271 – Database Systems (Spring 2026). The database will support user management, simulation delivery, performance tracking, help-desk support, administrative reporting, a Top Players leaderboard, and a motivational Quote of the Day. A lightweight local web application using React and Node.js/Express will also be developed to demonstrate the database visually through a browser interface.
 
-> 📄 The full project proposal is available in the Namal_Criko_v.2/ProposalDoc/ folder.
+> 📄 The full project proposal is available in the (Namal_Criko_v.2/ProposalDoc/) folder.
 
 ---
 
