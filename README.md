@@ -67,7 +67,7 @@ This repository — **Version 2** — focuses on designing and implementing the 
 
 ## Database Scope
 
-The schema will be fully normalised to **3NF** and implemented in **MySQL 8.x**, covering the following entities:
+The schema will be fully normalised to **3NF** and implemented in **MySQL 8.x**, covering almost like these entities:
 ```
 users               roles               simulation_categories
 players             admin_actions       techniques
