@@ -1,0 +1,7 @@
+{
+  "name": "Copy of Namal Criko",
+  "description": "An interactive cricket simulation training platform for Namal University students.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
