@@ -1,0 +1,569 @@
+\documentclass[12pt,a4paper]{article}
+
+% ── Packages ──────────────────────────────────────────────────────────────────
+\usepackage[margin=2.5cm]{geometry}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{longtable}
+\usepackage{hyperref}
+\usepackage{fancyhdr}
+\usepackage{titlesec}
+\usepackage{enumitem}
+\usepackage{xcolor}
+\usepackage{tabularx}
+\usepackage{multirow}
+\usepackage{parskip}
+
+\definecolor{namalgreen}{RGB}{34,85,34}
+\definecolor{lightgray}{RGB}{245,245,245}
+
+\hypersetup{
+    colorlinks=true,
+    linkcolor=namalgreen,
+    urlcolor=namalgreen,
+    citecolor=namalgreen
+}
+
+\titleformat{\section}{\large\bfseries\color{namalgreen}}{}{0em}{}[\titlerule]
+\titleformat{\subsection}{\normalsize\bfseries}{}{0em}{}
+
+\pagestyle{fancy}
+\fancyhf{}
+\lhead{\small CSC-271 -- Database Systems}
+\rhead{\small Database System Proposal}
+\cfoot{\thepage}
+\renewcommand{\headrulewidth}{0.4pt}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\begin{document}
+
+% ── Title Page ────────────────────────────────────────────────────────────────
+\begin{titlepage}
+    \centering
+    \vspace*{0.5cm}
+
+    {\LARGE\bfseries Namal University, Mianwali}\\[0.3cm]
+    {\large Department of Computer Science}\\[0.8cm]
+    \rule{\linewidth}{1pt}\\[0.4cm]
+    {\large\bfseries CSC-271 -- Database Systems}\\
+    {\large\bfseries Complex Computing Problem -- Milestone 1}\\[0.4cm]
+    \rule{\linewidth}{1pt}\\[1.2cm]
+
+    {\Huge\bfseries Database System Proposal}\\[0.5cm]
+    {\large\bfseries Project Title: \textit{Namal Criko}}\\[0.3cm]
+    {\large Cricket Simulation Trainer -- Database Layer}\\[1.5cm]
+
+    \begin{tabular}{lll}
+        \toprule
+        \textbf{Name} & \textbf{Roll No.} & \textbf{Email} \\
+        \midrule
+        M. Jamal Ahmad Khan      & Num-Bscs-2024-51 & \href{mailto:bscs24f51@namal.edu.pk}{bscs24f51@namal.edu.pk} \\
+        Qazi M. Auon Farooqi     & Num-Bscs-2024-64 & \href{mailto:bscs24f64@namal.edu.pk}{bscs24f64@namal.edu.pk} \\
+        Breera Ijaz              & Num-Bscs-2024-20 & \href{mailto:bscs24f20@namal.edu.pk}{bscs24f20@namal.edu.pk} \\
+        \bottomrule
+    \end{tabular}\\[1.5cm]
+
+    \textbf{Submission Date:} 12th March, 2026\\[0.3cm]
+    \textbf{Instructor:} Asiya Batool\\[0.3cm]
+    \textbf{Semester:} Spring 2026\\[0.3cm]
+    \textbf{GitHub Repository:} \url{https://github.com/MJamalAhmadKhan/Namal-Criko-Database}
+    \vfill
+\end{titlepage}
+
+\tableofcontents
+\newpage
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Introduction}
+
+Namal Criko is a web-based cricket simulation trainer developed at Namal University,
+Mianwali, as part of CSC-225 (Software Engineering, Fall 2025). It enables players
+to learn batting and bowling techniques through interactive browser simulations and
+provides administrators with tools to manage users and platform content.
+
+This course project focuses on designing and implementing the \textbf{relational database
+layer} that supports all platform features: user management, simulation delivery,
+performance tracking, help-desk support, administrative reporting, a Top Players
+leaderboard, and a motivational Quote of the Day. A simple local web application
+using React and Node.js/Express is also developed to demonstrate the database
+visually through a browser interface.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Problem Statement}
+
+Namal Criko currently has no database layer. The following gaps must be addressed:
+
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{No persistent storage} for user accounts, approval statuses,
+    or profile data.
+    \item \textbf{No simulation catalogue schema} to store techniques, categories,
+    assets, and instructional content.
+    \item \textbf{No performance records} to track player progress, session durations,
+    or learning streaks.
+    \item \textbf{No ticket management} to handle help-desk queries and their
+    lifecycle states.
+    \item \textbf{No reporting store} for administrative analytics such as user
+    growth and simulation engagement.
+    \item \textbf{No top player data} to display real-world cricket statistics
+    as motivational benchmarks for learners.
+    \item \textbf{No Quote of the Day} mechanism to deliver rotating motivational
+    quotes to players at login.
+\end{itemize}
+
+This proposal addresses all gaps through a fully normalised MySQL schema with views,
+stored procedures, and a lightweight local web interface for demonstration.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Objectives}
+
+\begin{enumerate}[leftmargin=1.5em]
+    \item Design a normalised relational schema (minimum 3NF) covering all entities
+    within 2nd mile stone  of project .
+    \item Implement all tables, constraints, primary keys, foreign keys, and indexes
+    in MySQL 8.x.
+    \item Enable complete user lifecycle management: registration, admin approval,
+    profile updates, suspension, and deletion.
+    \item Store and serve the full simulation catalogue (10+ techniques) with
+    sub-second read latency on indexed queries.
+    \item Log every player--simulation interaction to support performance-tracking
+    queries for up to 100+ concurrent users.
+    \item Manage the complete help-desk ticket lifecycle with referential integrity
+    at all stages.
+    \item Store professional cricket player profiles and statistics to power a
+    motivational Top Players leaderboard.
+    \item Deliver a database-driven Quote of the Day shown to each player on login,
+    with a seven-day non-repeat window per player.
+    \item Build a local React + Node.js/Express web application connected to MySQL
+    via the \texttt{mysql2} driver to demonstrate all database features visually.
+    \item Produce a complete ER diagram, data dictionary, and seed dataset.
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Scope}
+
+\subsection{Included in the Database System}
+
+\begin{longtable}{>{\bfseries}p{4cm} p{9.5cm}}
+    \toprule
+    Module & Database Coverage \\
+    \midrule
+    \endhead
+
+    User Management &
+    Players, administrators, roles, account statuses, and
+    email-verification tokens. Supports registration, approval,
+    profile management, suspension, and deletion. \\[4pt]
+
+    Simulation Catalogue &
+    Categories (Level 1--3 hierarchy), techniques, assets (file paths/URLs),
+    step-by-step instructions, key points, and common mistakes. \\[4pt]
+
+    Performance Tracking &
+    Access logs (player ID, technique ID, timestamp, duration, completion
+    flag), learning streak counters, and progress summaries. \\[4pt]
+
+    Help Desk &
+    Tickets (subject, category, status, priority), admin responses,
+    and ticket status history. \\[4pt]
+
+    Events \& Announcements &
+    Cricket events (title, date, venue, description, archived flag)
+    managed by administrators. \\[4pt]
+
+    Top Players &
+    Professional player profiles (name, nationality, role, style, debut year)
+    linked to a statistics table (matches, runs, average, wickets, economy,
+    centuries, fifties). Exposed through ranked views filterable by role
+    and format. \\[4pt]
+
+    Quote of the Day &
+    Curated quotes table (text, author, category, active flag). A stored
+    procedure selects one quote per login, enforces a seven-day non-repeat
+    window, and logs impressions per player. \\[4pt]
+
+    Audit \& Security &
+    Login attempt logs, admin action logs, and password-reset tokens. \\[4pt]
+
+    Web Demo Layer &
+    Local React + Node.js/Express app connected via \texttt{mysql2} to
+    demonstrate player dashboard, admin panel, Top Players viewer, and
+    Quote of the Day through live API calls. \\
+
+    \bottomrule
+\end{longtable}
+
+\subsection{Excluded from Scope}
+
+\begin{itemize}[leftmargin=1.5em]
+    \item Real-time multiplayer or AI-opponent features.
+    \item Payment processing or external API integrations.
+    \item Mobile native application.
+    \item Video file storage (assets referenced by URL, not stored as BLOBs).
+    \item Live cricket data feeds (Top Players data is manually seeded).
+    \item Cloud deployment (localhost only for this milestone).
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Data Collection}
+
+\subsection{Sources of Data}
+
+\begin{enumerate}[leftmargin=1.5em]
+    \item \textbf{SRS Document (CSC-225, Dec 2025)} --- primary reference for all
+    entities, attributes, and business rules.
+    \item \textbf{ICC / PCB coaching resources} --- used to populate the simulation
+    technique seed data accurately.
+    \item \textbf{Official cricket board statistics} (PCB, ICC) --- source for the
+    15+ professional player profiles and career statistics.
+    \item \textbf{Curated quotes collection} --- 20+ cricket and training motivational
+    quotes from published player interviews and coaching literature.
+    \item \textbf{MySQL 8.x reference manual} --- guides data-type, indexing, and
+    stored-procedure decisions.
+\end{enumerate}
+
+\subsection{Data Collection Methods}
+
+\begin{itemize}[leftmargin=1.5em]
+    \item \textbf{Requirements extraction} from SRS functional requirements
+    FR-001 through FR-023 to derive entity definitions and cardinality rules.
+    \item \textbf{Manual seed data entry} for techniques, player profiles,
+    statistics, and quotes for testing and demonstration.
+    \item \textbf{Peer schema review} to verify normalisation, constraint
+    correctness, and naming consistency.
+\end{itemize}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Technology Stack}
+
+\begin{longtable}{>{\bfseries}p{3.8cm} p{3.2cm} p{6.3cm}}
+    \toprule
+    Component & Technology & Justification \\
+    \midrule
+    \endhead
+
+    DBMS & MySQL 8.x & Industry-standard relational DBMS; free and well-documented. \\[4pt]
+    Query Language & SQL & Used for all DDL, DML, views, procedures, and triggers. \\[4pt]
+    Back-end & Node.js + Express & Lightweight REST API layer between React and MySQL. \\[4pt]
+    & &
+    \\[4pt]
+    Front-end & React.js & Component-based UI to display database data in a browser. \\[4pt]
+    Schema Design & MySQL Workbench & ER diagram creation, DDL forward-engineering, query profiling. \\[4pt]
+    Version Control & Git / GitHub & SQL scripts, seed data, and React source all version-controlled. \\[4pt]
+    Dev Environment & VS Code + XAMPP & Local MySQL instance; consistent across all team members. \\[4pt]
+    Testing & Workbench & SQL query testing and REST endpoint verification. \\
+
+    \bottomrule
+\end{longtable}
+
+\subsection{Connecting React to MySQL}
+
+React runs in the browser and \textbf{cannot query MySQL directly}. All requests
+pass through the Express API, which executes SQL via \texttt{mysql2} and returns
+JSON. The three tiers on localhost are:
+\textbf{MySQL (3306)} $\to$ \textbf{Express API (5000)} $\to$ \textbf{React (3000)}.
+Install dependencies with \texttt{npm install express mysql2 cors}.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{System Functionality}
+
+\begin{enumerate}[leftmargin=1.5em, itemsep=4pt]
+
+    \item \textbf{User Registration Storage.}
+    Insert player records with full name, unique email, hashed password,
+    contact number, and initial status \texttt{PENDING}.
+
+    \item \textbf{Admin Approval Workflow.}
+    Update player status to \texttt{ACTIVE} or \texttt{REJECTED}; log
+    action in the audit table.
+
+    \item \textbf{Authentication Support.}
+    Return hashed password and account status for a given email to support
+    bcrypt comparison and approval-gate enforcement in the application layer.
+
+    \item \textbf{Profile Read and Update.}
+    Allow updates to mutable fields (name, contact, password hash); keep
+    email and creation date immutable at the database level.
+
+    \item \textbf{Simulation Catalogue CRUD.}
+    Full create, read, update, and delete on categories (three-level
+    hierarchy) and techniques including steps, key points, assets,
+    difficulty, and duration.
+
+    \item \textbf{Simulation Access Logging.}
+    Insert a log record on every view event: player ID, technique ID,
+    start timestamp, duration in seconds, completion flag.
+
+    \item \textbf{Performance Metrics.}
+    Stored procedures to return: total simulations accessed, total time
+    spent, current learning streak, and completed techniques per player.
+
+    \item \textbf{Help Desk Ticket Lifecycle.}
+   Create, read, update, and soft-delete on tickets with status history table; referential integrity
+    between ticket, player, and admin records enforced at all stages.
+
+    \item \textbf{Event Management.}
+    Create, read, update, and soft-delete cricket events with an archived
+    flag; ordered chronologically for player-facing queries.
+
+    \item \textbf{Top Players Leader-board.}
+    Store professional player profiles and format-specific statistics.
+    Provide  different views of player profiles.
+
+    \item \textbf{Quote of the Day.}
+    Table of  quotes with category (\texttt{BATTING},
+    \texttt{BOWLING}, \texttt{GENERAL}, \texttt{MINDSET}) and active flags
+
+    \item \textbf{Reporting Views.}
+    \begin{itemize}[leftmargin=1.2em]
+        \item  Registration counts.
+        \item  Techniques by access count.
+        \item Average time per category.
+        \item  Count and age of open tickets.
+        \item Batting ,\ bowling time per player.
+    \end{itemize}
+
+    \item \textbf{Data Integrity.}
+    Foreign keys, unique constraints on email, NOT NULL on mandatory fields,
+    and ENUM types for status fields enforced at the engine level.
+
+    \item \textbf{Bulk Status Operations.}
+    Stored procedure to batch-approve or batch-suspend a list of player IDs.
+
+    \item \textbf{Soft Delete.}
+    \texttt{deleted\_at} timestamp on user and simulation records for
+    logical deletion with historical data retained.
+
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{User Classes}
+
+\begin{longtable}{>{\bfseries}p{3cm} p{5.5cm} p{5cm}}
+    \toprule
+    User Class & Role Description & Database Access Level \\
+    \midrule
+    \endhead
+
+    Player &
+    Learns cricket techniques, tracks own progress, submits tickets,
+    views Top Players, and receives Quote of the Day on login. &
+    Read: simulation catalogue, top player profiles, own profile, daily
+    quote. Write: own performance logs, ticket submissions. \\[6pt]
+
+    Administrator &
+    Approves accounts, manages content, resolves tickets, posts events,
+    maintains player and quote datasets. &
+    Full read/write on all tables except raw password hashes. Executes
+    all reporting views and stored procedures. All actions audit-logged. \\
+
+    \bottomrule
+\end{longtable}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Task Division}
+
+All three members contribute equally across every phase. The table below assigns
+one \textbf{primary owner} per deliverable for accountability, while the remaining
+two members are co-contributors who implement, test, and review that deliverable
+alongside the owner. No member is a passive reviewer --- each person writes code
+or SQL in every phase.
+
+\begin{longtable}{p{3.8cm} p{3.5cm} p{3.5cm} p{3.5cm}}
+    \toprule
+    \textbf{Deliverable} &
+    \textbf{M. Jamal} \newline \textit{(Bscs-2024-51)} &
+    \textbf{Qazi Auon} \newline \textit{(Bscs-2024-64)} &
+    \textbf{Breera Ijaz} \newline \textit{(Bscs-2024-20)} \\
+    \midrule
+    \endhead
+
+    \textbf{CCP Part 1} \newline
+    Project Proposal \&
+    GitHub Setup &
+    Introduction, Objectives,
+    Scope sections \newline
+    \textit{(Primary)} &
+    Tech Stack, System
+    Functionality sections \newline
+    \textit{(Primary)} &
+    Data Collection, User
+    Classes, Conclusion sections \newline
+    \textit{(Primary)} \\[8pt]
+
+    \textbf{Part 2} \newline
+    Conceptual Model ---
+    ER Diagram&
+    User Management \&
+    Help Desk entities,
+    relationships \newline
+    \textit{(Primary)} &
+    Simulation Catalogue \&
+    Performance Tracking
+    entities \newline
+    \textit{(Co-contributor)} &
+    Top Players, Quote of Day,
+    Events \& Audit entities \newline
+    \textit{(Co-contributor)} \\[8pt]
+
+    \textbf{Part 3a} \newline
+    Relational Schema \&
+    DDL Scripts&
+    DDL for User, Roles,
+    Audit, and Ticket tables;
+    all FK constraints \newline
+    \textit{(Co-contributor)} &
+    DDL for Simulation,
+    Category, Performance
+    Log tables; indexes \newline
+    \textit{(Primary)} &
+    DDL for Top Players,
+    Stats, Quotes, Events,
+    Impressions tables \newline
+    \textit{(Co-contributor)} \\[8pt]
+
+    \textbf{Part 3b} \newline
+    Views, Stored Procedures
+    \& Seed Data&
+    Procedures:
+    \texttt{sp\_get\_top\_players},
+    \texttt{sp\_bulk\_status};
+    seed: player profiles \newline
+    \textit{(Co-contributor)} &
+    Procedures:
+    \texttt{sp\_get\_performance},
+    \texttt{sp\_get\_streak};
+    seed: simulations \newline
+    \textit{(Co-contributor)} &
+    Procedure:
+    \texttt{sp\_get\_quote\_of\_day};
+    all six reporting views;
+    seed: quotes \newline
+    \textit{(Primary)} \\[8pt]
+
+    \textbf{Part 4} \newline
+    GUI Web Application
+    (React + Express)&
+    Express REST API:
+    all routes for users,
+    tickets, auth endpoints \newline
+    \textit{(Primary)} &
+    React pages: Admin
+    Panel, User Management,
+    Reporting dashboard \newline
+    \textit{(Co-contributor)} &
+    React pages: Player
+    Dashboard, Top Players,
+    Quote of Day display \newline
+    \textit{(Co-contributor)} \\[8pt]
+
+    &
+    &
+    &
+    \\
+
+    \bottomrule
+\end{longtable}
+
+\begin{longtable}{>{\bfseries}p{4cm} p{9.5cm}}
+    \toprule
+    Member & Summary of Contributions \\
+    \midrule
+    \endhead
+    M. Jamal Ahmad Khan &
+    Proposal (Introduction, Objectives, Scope) $\cdot$ ER entities for User \&
+    Help Desk $\cdot$ DDL for User/Ticket/Audit tables $\cdot$ Stored procedures
+    for Top Players \& bulk operations $\cdot$ Express REST API layer $\cdot$
+    Data dictionary for User/Ticket tables. \\[5pt]
+    Qazi M. Auon Farooqi &
+    Proposal (Tech Stack, System Functionality) $\cdot$ ER entities for
+    Simulation \& Performance $\cdot$ DDL for Simulation/Performance tables
+    with indexes $\cdot$ Performance stored procedures $\cdot$ React Admin Panel
+    \& reporting dashboard $\cdot$ Data dictionary \& README. \\[5pt]
+    Breera Ijaz &
+    Proposal (Data Collection, User Classes, Conclusion) $\cdot$ ER entities
+    for Top Players, Quotes \& Events $\cdot$ DDL for Top Players/Quotes tables
+    $\cdot$ All six reporting views \& Quote of Day procedure $\cdot$ React
+    Player Dashboard \& Quote display $\cdot$ Data dictionary for
+    views/procedures. \\
+    \bottomrule
+\end{longtable}
+
+\noindent\textbf{Meeting Cadence:} Weekly sync (Zoom or on-campus) to review
+progress, resolve blockers, and update the GitHub Projects task board.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{Conclusion}
+
+This proposal presents the complete database development plan for Namal Criko.
+The system will be built on a normalised MySQL 8.x schema covering user management,
+simulation catalogue, performance tracking, help-desk, events, Top Players, and
+Quote of the Day. Pre-built views and stored procedures will serve all application
+queries, and a lightweight local React web application will demonstrate every
+database feature through a live browser interface. The deliverables --- schema,
+ER diagram, data dictionary, seed data, and web demo --- form a solid foundation
+for the subsequent development phases of the platform.
+
+% ══════════════════════════════════════════════════════════════════════════════
+\section{References}
+
+\begin{enumerate}[leftmargin=1.5em]
+    \item IEEE Std 830-1998, \textit{IEEE Recommended Practice for Software
+    Requirements Specifications}. IEEE, 1998.
+    \item Namal Criko SRS, CSC-225 -- Software Engineering, Namal University,
+    Mianwali, December 2025.
+    \item Namal Criko Project Proposal, CSC-225 -- Software Engineering,
+    \item MySQL Workbench Documentation. [Online]. Available:
+    \url{https://dev.mysql.com/doc/workbench/en/}
+    \item npm, \textit{mysql2 Package}. [Online]. Available:
+    \url{https://www.npmjs.com/package/mysql2}
+    \item GitHub Repository:
+    \url{https://github.com/MJamalAhmadKhan/Namal-Criko-Database}
+\end{enumerate}
+
+% ══════════════════════════════════════════════════════════════════════════════
+\appendix
+\section*{Appendix 1: AI Prompts and Tools Used}
+\addcontentsline{toc}{section}{Appendix 1: AI Prompts and Tools Used}
+
+\begin{longtable}{|p{3cm}|p{8cm}|p{3cm}|}
+    \hline
+    \textbf{AI Tool} & \textbf{Prompt / Purpose} & \textbf{Access Date} \\
+    \hline
+    \endfirsthead
+    \hline
+    \textbf{AI Tool} & \textbf{Prompt / Purpose} & \textbf{Access Date} \\
+    \hline
+    \endhead
+
+    Claude (Anthropic) &
+    \textbf{Prompt 1:} ``Generate a complete LaTeX proposal for a database systems
+    project based on the Namal Criko cricket simulation trainer.''
+
+    \textbf{Prompt 2:} ``Suggest Task Division to show equal contribution across
+    all CCP phases aligned with the course outline.''
+
+    \textbf{Purpose:} Initial LaTeX generation and iterative content refinement. &
+    March 2026 \\
+    \hline
+
+    Google Gemini &
+    \textbf{Prompt3:} ``Proofread and improve clarity of the Problem Statement and
+    Task Division sections for academic tone and conciseness.''
+
+    \textbf{Purpose:} Grammar checking and section refinement. & March 2026 \\
+    \hline
+
+    GitHub Copilot &
+    \textbf{Purpose:} Auto-completing repetitive LaTeX table structures and
+    formatting commands. & March 2026 \\
+    \hline
+
+\end{longtable}
+
+\subsection*{Declaration}
+We hereby declare that all AI tools used have been documented as per course
+guidelines. The final content has been reviewed and approved by all team members,
+who take full responsibility for its accuracy and originality.
+
+\end{document}
